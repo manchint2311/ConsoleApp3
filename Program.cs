@@ -2,6 +2,7 @@
 using System.IO;
 using System.Media; // Dùng để phát âm thanh
 using System.Threading.Tasks; // Dùng để chạy âm thanh trên luồng khác
+using NAudio.Wave;
 
 class MathChallengeGame
 {
@@ -99,7 +100,6 @@ class MathChallengeGame
         int b = random.Next(1, 11);
         string[] operators = { "+", "-", "*", "/" };
         string op = operators[random.Next(operators.Length)];
-        double correctAnswer = op switch
         {
             "+" => a + b,
             "-" => a - b,
@@ -114,18 +114,15 @@ class MathChallengeGame
 
         try
         {
-            double playerAnswer = double.Parse(Console.ReadLine());
             gameData[currentRound, currentQuestionIndex] = new Question(question, playerAnswer, correctAnswer);
 
             if (playerAnswer == correctAnswer)
             {
                 score += 10;
-                PlaySound("Assets/correct.wav"); // Phat am thanh dung
                 PrintMessage("Chinh xac! Ban duoc cong 10 diem.", true);
             }
             else
             {
-                PlaySound("Assets/wrong.wav"); // Phat am thanh sai
                 PrintMessage($"Sai! Dap an dung la {correctAnswer}.", true);
             }
             currentQuestionIndex++;
@@ -223,11 +220,7 @@ class MathChallengeGame
 
     static void PlaySound(string filePath)
     {
-
-        if (File.Exists(filePath))
         {
-            SoundPlayer player = new SoundPlayer(filePath); // Tao doi tuong SoundPlayer
-            player.Play(); // Phat am thanh mot lan
         }
     
     }
@@ -239,3 +232,11 @@ class Question
     public int PlayerAnswer { get; }
     public int CorrectAnswer { get; }
     public bool IsCorrect => PlayerAnswer == CorrectAnswer;
+
+    public Question(string questionText, int playerAnswer, int correctAnswer)
+    {
+        QuestionText = questionText;
+        PlayerAnswer = playerAnswer;
+        CorrectAnswer = correctAnswer;
+    }
+}
